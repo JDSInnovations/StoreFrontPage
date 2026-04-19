@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHORELINE — She Lives by the Sea</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blush:   #f5e9e0;
+    --shell:   #eeddd0;
+    --terracotta: #c97b5a;
+    --terra-dark: #a35e40;
+    --sand:    #e8d5c0;
+    --sea:     #5a8fa0;
+    --seafoam: #c8dfe8;
+    --ink:     #1e1a17;
+    --warm-white: #faf6f2;
+    --taupe:   #9c8878;
+    --gold:    #c9a96e;
+    --rose:    #d4867a;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--warm-white);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 1000;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    opacity: 0.4;
+  }
+
+  /* ── CURSOR ── */
+  * { cursor: none; }
+  #cursor-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--terracotta);
+    position: fixed; z-index: 9999; pointer-events: none;
+    transform: translate(-50%,-50%);
+    transition: transform 0.1s;
+  }
+  #cursor-ring {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 1.5px solid var(--terracotta);
+    position: fixed; z-index: 9998; pointer-events: none;
+    transform: translate(-50%,-50%);
+    transition: left 0.12s ease, top 0.12s ease, width 0.25s, height 0.25s, opacity 0.25s;
+    opacity: 0.6;
+  }
+  #cursor-ring.big { width: 56px; height: 56px; opacity: 0.3; }
+
+  /* ── ANNOUNCEMENT BAR ── */
+  .announce {
+    background: var(--terracotta); color: var(--warm-white);
+    text-align: center; padding: 0.55rem;
+    font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(250,246,242,0.93);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(200,175,150,0.2);
+    padding: 0 3.5rem;
+    display: grid; grid-template-columns: 1fr auto 1fr;
+    align-items: center; height: 68px;
+  }
+  nav ul { display: flex; gap: 2.2rem; list-style: none; }
+  nav a {
+    font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink); text-decoration: none; font-weight: 400;
+    opacity: 0.75; transition: opacity 0.2s;
+  }
+  nav a:hover { opacity: 1; }
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.65rem; letter-spacing: 0.35em;
+    color: var(--ink); text-decoration: none;
+    text-align: center; font-weight: 300;
+    text-transform: uppercase;
+  }
+  .logo em { font-style: italic; color: var(--terracotta); font-weight: 400; }
+  .header-right {
+    display: flex; justify-content: flex-end;
+    align-items: center; gap: 1.5rem;
+  }
+  .hbtn {
+    background: none; border: none; font-size: 1rem;
+    color: var(--ink); opacity: 0.7; transition: opacity 0.2s;
+    position: relative;
+  }
+  .hbtn:hover { opacity: 1; }
+  .cart-badge {
+    position: absolute; top: -5px; right: -7px;
+    background: var(--terracotta); color: white;
+    font-size: 0.55rem; font-weight: 600;
+    width: 15px; height: 15px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    display: grid; grid-template-columns: 55% 45%;
+    min-height: calc(100vh - 93px);
+    overflow: hidden;
+  }
+  .hero-media {
+    position: relative; overflow: hidden;
+    background: var(--shell);
+  }
+  .hero-media img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 8s ease;
+  }
+  .hero:hover .hero-media img { transform: scale(1.04); }
+  .hero-pills {
+    position: absolute; top: 2.5rem; left: 2.5rem;
+    display: flex; flex-direction: column; gap: 0.6rem;
+  }
+  .pill {
+    background: rgba(250,246,242,0.85); backdrop-filter: blur(8px);
+    padding: 0.4rem 1rem; font-size: 0.65rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--terracotta); font-weight: 500;
+    display: inline-block;
+  }
+  .hero-content {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 5rem 5rem 5rem 4.5rem;
+    background: var(--warm-white);
+    position: relative;
+  }
+  .eyebrow {
+    font-size: 0.68rem; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--taupe); margin-bottom: 1.8rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .eyebrow::before { content: ''; width: 36px; height: 1px; background: var(--taupe); }
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.2rem, 5.5vw, 6rem);
+    font-weight: 300; line-height: 1.0;
+    color: var(--ink); margin-bottom: 2rem;
+    letter-spacing: -0.01em;
+  }
+  .hero h1 em {
+    font-style: italic; color: var(--terracotta);
+    display: block;
+  }
+  .hero-desc {
+    font-size: 0.95rem; color: var(--taupe); line-height: 1.8;
+    font-weight: 300; max-width: 360px; margin-bottom: 3rem;
+  }
+  .hero-actions { display: flex; align-items: center; gap: 2rem; }
+  .btn-fill {
+    background: var(--ink); color: var(--warm-white);
+    padding: 0.95rem 2.8rem; text-decoration: none;
+    font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
+    font-weight: 500; transition: background 0.3s, transform 0.2s;
+    display: inline-block;
+  }
+  .btn-fill:hover { background: var(--terracotta); transform: translateY(-2px); }
+  .btn-underline {
+    font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink); text-decoration: none; font-weight: 400;
+    border-bottom: 1px solid currentColor; padding-bottom: 2px;
+    transition: color 0.2s;
+  }
+  .btn-underline:hover { color: var(--terracotta); }
+  .hero-stats {
+    position: absolute; bottom: 3rem; right: 0;
+    display: flex; gap: 0; border-top: 1px solid var(--shell);
+    border-left: 1px solid var(--shell);
+  }
+  .stat {
+    padding: 1.2rem 2rem; border-right: 1px solid var(--shell);
+    border-bottom: 1px solid var(--shell);
+  }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem; font-weight: 300; color: var(--ink);
+  }
+  .stat-label {
+    font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--taupe); margin-top: 0.1rem;
+  }
+
+  /* ── MARQUEE ── */
+  .ticker {
+    background: var(--blush); border-top: 1px solid var(--shell);
+    border-bottom: 1px solid var(--shell);
+    padding: 0.85rem 0; overflow: hidden;
+  }
+  .ticker-inner {
+    display: flex; gap: 3.5rem; white-space: nowrap;
+    animation: tick 28s linear infinite;
+  }
+  .ticker-item {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 1.05rem; color: var(--terracotta);
+    display: flex; align-items: center; gap: 2rem; flex-shrink: 0;
+  }
+  .ticker-item::after { content: '·'; color: var(--sand); font-style: normal; font-size: 1.4rem; }
+  @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* ── SECTIONS ── */
+  .sec-header { text-align: center; padding: 5.5rem 2rem 2.5rem; }
+  .sec-eyebrow {
+    font-size: 0.66rem; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--taupe); margin-bottom: 0.8rem;
+  }
+  .sec-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 4vw, 3.8rem);
+    font-weight: 300; color: var(--ink); line-height: 1.1;
+  }
+  .sec-title em { font-style: italic; color: var(--terracotta); }
+
+  /* ── PRODUCT GRID ── */
+  .shop-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 0; padding: 1rem 3.5rem 5rem;
+  }
+  .p-card {
+    position: relative; border: 1px solid transparent;
+    transition: border-color 0.3s;
+    background: var(--warm-white);
+  }
+  .p-card:hover { border-color: var(--shell); z-index: 2; }
+  .p-img {
+    aspect-ratio: 3/4; overflow: hidden; position: relative;
+    background: var(--blush);
+  }
+  .p-img img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94);
+    display: block;
+  }
+  .p-card:hover .p-img img { transform: scale(1.06); }
+  .p-badge {
+    position: absolute; top: 1.1rem; left: 1.1rem;
+    background: var(--terracotta); color: white;
+    font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
+    padding: 0.28rem 0.7rem; font-weight: 500;
+  }
+  .p-badge.new { background: var(--sea); }
+  .p-badge.sale { background: var(--rose); }
+  .p-actions {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    display: flex; flex-direction: column; gap: 0;
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+  }
+  .p-card:hover .p-actions { transform: translateY(0); }
+  .p-add {
+    background: var(--ink); color: var(--warm-white);
+    border: none; padding: 0.9rem; width: 100%;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+    font-weight: 500; transition: background 0.2s;
+  }
+  .p-add:hover { background: var(--terracotta); }
+  .p-sizes {
+    background: rgba(250,246,242,0.95); backdrop-filter: blur(4px);
+    display: flex; justify-content: center; gap: 0;
+  }
+  .size-opt {
+    padding: 0.5rem 0.9rem; font-size: 0.65rem; font-weight: 500;
+    color: var(--taupe); border-right: 1px solid var(--shell);
+    transition: color 0.2s, background 0.2s; letter-spacing: 0.05em;
+  }
+  .size-opt:last-child { border-right: none; }
+  .size-opt:hover { color: var(--terracotta); background: var(--blush); }
+  .p-wish {
+    position: absolute; top: 1rem; right: 1rem;
+    background: rgba(250,246,242,0.85); border: none;
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; color: var(--taupe);
+    opacity: 0; transition: opacity 0.3s, color 0.2s;
+  }
+  .p-card:hover .p-wish { opacity: 1; }
+  .p-wish:hover { color: var(--rose); }
+  .p-info { padding: 1.2rem 1.4rem 1.8rem; }
+  .p-cat {
+    font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--taupe); margin-bottom: 0.35rem;
+  }
+  .p-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem; font-weight: 400; color: var(--ink);
+    margin-bottom: 0.5rem; line-height: 1.25;
+  }
+  .p-price { display: flex; align-items: baseline; gap: 0.7rem; }
+  .p-price .now { font-size: 0.92rem; font-weight: 500; color: var(--ink); }
+  .p-price .was { font-size: 0.8rem; color: var(--taupe); text-decoration: line-through; }
+  .p-stars { font-size: 0.7rem; color: var(--gold); letter-spacing: 0.05em; margin-top: 0.3rem; }
+
+  /* ── SPLIT FEATURE ── */
+  .feature-split {
+    display: grid; grid-template-columns: 1fr 1fr;
+    margin: 0 3.5rem 5rem;
+    min-height: 580px; overflow: hidden;
+    border: 1px solid var(--shell);
+  }
+  .feature-img {
+    position: relative; overflow: hidden; background: var(--blush);
+  }
+  .feature-img img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+  .feature-split:hover .feature-img img { transform: scale(1.03); }
+  .feature-content {
+    background: var(--blush);
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 5rem 4.5rem;
+  }
+  .feature-content .sec-eyebrow { text-align: left; }
+  .feature-content h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 3.5vw, 3.2rem);
+    font-weight: 300; line-height: 1.1;
+    color: var(--ink); margin: 1rem 0 1.5rem;
+  }
+  .feature-content h2 em { font-style: italic; color: var(--terracotta); }
+  .feature-content p {
+    font-size: 0.93rem; color: var(--taupe); line-height: 1.85;
+    font-weight: 300; margin-bottom: 2.5rem; max-width: 380px;
+  }
+  .feature-tags { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
+  .tag {
+    border: 1px solid var(--sand); padding: 0.35rem 0.9rem;
+    font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--taupe);
+  }
+
+  /* ── LIFESTYLE GRID ── */
+  .life-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 320px 320px;
+    gap: 1rem; padding: 0 3.5rem 5rem;
+  }
+  .life-card {
+    position: relative; overflow: hidden;
+    background: var(--blush);
+  }
+  .life-card:first-child { grid-row: span 2; }
+  .life-card img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.6s ease;
+    display: block;
+  }
+  .life-card:hover img { transform: scale(1.06); }
+  .life-label {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 2.5rem 1.8rem 1.8rem;
+    background: linear-gradient(transparent, rgba(30,26,23,0.7));
+    color: var(--warm-white);
+    transform: translateY(10px); opacity: 0;
+    transition: transform 0.35s, opacity 0.35s;
+  }
+  .life-card:hover .life-label { transform: translateY(0); opacity: 1; }
+  .life-label small {
+    font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase;
+    opacity: 0.75; display: block; margin-bottom: 0.3rem;
+  }
+  .life-label h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.35rem; font-weight: 400;
+  }
+  .life-label a {
+    color: var(--warm-white); text-decoration: none;
+    font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;
+    border-bottom: 1px solid rgba(255,255,255,0.4);
+    padding-bottom: 1px; display: inline-block; margin-top: 0.6rem;
+  }
+
+  /* ── TESTIMONIALS ── */
+  .reviews-section {
+    background: var(--blush); padding: 5rem 3.5rem;
+  }
+  .reviews-section .sec-header { padding-top: 0; }
+  .reviews-track {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem; margin-top: 3rem;
+  }
+  .r-card {
+    background: var(--warm-white); padding: 2.5rem 2.2rem;
+    border-bottom: 3px solid transparent;
+    transition: border-color 0.3s;
+  }
+  .r-card:hover { border-color: var(--terracotta); }
+  .r-stars { color: var(--gold); font-size: 0.8rem; margin-bottom: 1.2rem; letter-spacing: 0.1em; }
+  .r-text {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 1.12rem; line-height: 1.65; color: var(--ink);
+    margin-bottom: 1.8rem; font-weight: 300;
+  }
+  .r-person { display: flex; align-items: center; gap: 1rem; }
+  .r-avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: var(--seafoam); display: flex; align-items: center;
+    justify-content: center; font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem; color: var(--sea); flex-shrink: 0;
+  }
+  .r-name { font-size: 0.85rem; font-weight: 500; color: var(--ink); }
+  .r-loc { font-size: 0.7rem; color: var(--taupe); margin-top: 0.1rem; }
+
+  /* ── NEWSLETTER ── */
+  .nl-section {
+    position: relative; overflow: hidden;
+    min-height: 480px;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    background:
+      linear-gradient(rgba(30,26,23,0.55), rgba(30,26,23,0.55)),
+      url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&q=80') center/cover no-repeat;
+  }
+  .nl-content { position: relative; z-index: 2; max-width: 600px; padding: 4rem 2rem; }
+  .nl-content .sec-eyebrow { color: rgba(250,246,242,0.7); }
+  .nl-content h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 4vw, 3.8rem);
+    font-weight: 300; color: var(--warm-white);
+    line-height: 1.1; margin: 0.8rem 0 1.2rem;
+  }
+  .nl-content h2 em { font-style: italic; color: var(--gold); }
+  .nl-content p { font-size: 0.9rem; color: rgba(250,246,242,0.75); font-weight: 300; margin-bottom: 2.5rem; line-height: 1.7; }
+  .nl-form { display: flex; max-width: 440px; margin: 0 auto; }
+  .nl-form input {
+    flex: 1; padding: 1rem 1.5rem;
+    background: rgba(250,246,242,0.12);
+    border: 1px solid rgba(250,246,242,0.3);
+    border-right: none;
+    color: var(--warm-white); font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem; outline: none;
+  }
+  .nl-form input::placeholder { color: rgba(250,246,242,0.5); }
+  .nl-form button {
+    background: var(--terracotta); color: white; border: none;
+    padding: 1rem 1.8rem; font-family: 'DM Sans', sans-serif;
+    font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+    font-weight: 500; white-space: nowrap; transition: background 0.2s;
+  }
+  .nl-form button:hover { background: var(--terra-dark); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink); color: rgba(250,246,242,0.85);
+    padding: 5rem 3.5rem 2rem;
+  }
+  .footer-top {
+    display: grid; grid-template-columns: 1.8fr 1fr 1fr 1fr;
+    gap: 4rem; padding-bottom: 4rem;
+    border-bottom: 1px solid rgba(250,246,242,0.08);
+    margin-bottom: 2rem;
+  }
+  .f-brand .logo { color: var(--warm-white); font-size: 1.4rem; display: block; margin-bottom: 1rem; }
+  .f-brand p { font-size: 0.83rem; color: rgba(250,246,242,0.5); line-height: 1.8; font-weight: 300; max-width: 240px; margin-bottom: 2rem; }
+  .socials { display: flex; gap: 0.8rem; }
+  .soc {
+    width: 34px; height: 34px; border: 1px solid rgba(250,246,242,0.15);
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(250,246,242,0.5); font-size: 0.8rem; text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .soc:hover { border-color: var(--terracotta); color: var(--terracotta); }
+  .f-col h5 {
+    font-size: 0.65rem; letter-spacing: 0.28em; text-transform: uppercase;
+    color: rgba(250,246,242,0.4); margin-bottom: 1.5rem; font-weight: 500;
+  }
+  .f-col ul { list-style: none; }
+  .f-col li { margin-bottom: 0.75rem; }
+  .f-col a {
+    font-size: 0.85rem; color: rgba(250,246,242,0.6);
+    text-decoration: none; transition: color 0.2s; font-weight: 300;
+  }
+  .f-col a:hover { color: var(--warm-white); }
+  .footer-bottom {
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-bottom p { font-size: 0.75rem; color: rgba(250,246,242,0.3); }
+  .pay-methods { display: flex; gap: 0.6rem; }
+  .pm {
+    padding: 0.25rem 0.6rem; border: 1px solid rgba(250,246,242,0.1);
+    font-size: 0.6rem; letter-spacing: 0.1em;
+    color: rgba(250,246,242,0.3);
+  }
+
+  /* ── CART DRAWER ── */
+  .cart-bg {
+    position: fixed; inset: 0; background: rgba(30,26,23,0.45);
+    z-index: 200; opacity: 0; pointer-events: none;
+    transition: opacity 0.4s; backdrop-filter: blur(4px);
+  }
+  .cart-bg.on { opacity: 1; pointer-events: all; }
+  .cart-drawer {
+    position: fixed; right: -500px; top: 0; bottom: 0;
+    width: 440px; max-width: 100vw;
+    background: var(--warm-white); z-index: 201;
+    transition: right 0.45s cubic-bezier(0.22,1,0.36,1);
+    display: flex; flex-direction: column;
+  }
+  .cart-drawer.on { right: 0; }
+  .cart-top {
+    padding: 2rem 2rem 1.5rem;
+    border-bottom: 1px solid var(--shell);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .cart-top h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem; font-weight: 400;
+  }
+  .cart-close { background: none; border: none; font-size: 1.2rem; color: var(--taupe); }
+  .cart-body { flex: 1; overflow-y: auto; padding: 1.5rem 2rem; }
+  .ci {
+    display: grid; grid-template-columns: 72px 1fr auto;
+    gap: 1rem; padding: 1.2rem 0;
+    border-bottom: 1px solid var(--shell); align-items: start;
+  }
+  .ci img { width: 72px; height: 90px; object-fit: cover; }
+  .ci-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem; color: var(--ink); margin-bottom: 0.25rem;
+  }
+  .ci-meta { font-size: 0.7rem; color: var(--taupe); margin-bottom: 0.6rem; }
+  .ci-rm { background: none; border: none; font-size: 0.68rem; color: var(--taupe); letter-spacing: 0.1em; text-transform: uppercase; text-decoration: underline; }
+  .ci-price { font-size: 0.92rem; font-weight: 500; color: var(--ink); white-space: nowrap; }
+  .cart-foot {
+    padding: 1.8rem 2rem; border-top: 1px solid var(--shell);
+  }
+  .cart-subtotal {
+    display: flex; justify-content: space-between;
+    margin-bottom: 1.5rem;
+    font-family: 'Cormorant Garamond', serif; font-size: 1.1rem;
+  }
+  .empty-msg {
+    text-align: center; padding: 4rem 1rem;
+    color: var(--taupe); font-size: 0.9rem;
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 1.15rem;
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 2rem; left: 50%;
+    transform: translateX(-50%) translateY(120%);
+    background: var(--ink); color: var(--warm-white);
+    padding: 0.85rem 2.2rem; z-index: 500;
+    font-size: 0.78rem; letter-spacing: 0.12em;
+    transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+    pointer-events: none; white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── FADE IN ── */
+  .fade-up {
+    opacity: 0; transform: translateY(28px);
+    transition: opacity 0.75s ease, transform 0.75s ease;
+  }
+  .fade-up.in { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 1100px) {
+    .shop-grid { grid-template-columns: repeat(2, 1fr); }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    header { grid-template-columns: auto 1fr auto; }
+    nav ul { gap: 1.5rem; }
+  }
+  @media (max-width: 768px) {
+    header { grid-template-columns: auto auto; padding: 0 1.5rem; }
+    nav { display: none; }
+    .logo { font-size: 1.3rem; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-media { min-height: 55vw; }
+    .hero-content { padding: 3rem 2rem; }
+    .hero-stats { position: static; margin-top: 2rem; }
+    .shop-grid { grid-template-columns: 1fr 1fr; padding: 0.5rem 1rem 3rem; }
+    .feature-split { grid-template-columns: 1fr; margin: 0 1rem 3rem; }
+    .life-grid { grid-template-columns: 1fr 1fr; padding: 0 1rem 3rem; }
+    .life-card:first-child { grid-row: span 1; }
+    .reviews-track { grid-template-columns: 1fr; }
+    footer { padding: 3rem 1.5rem 1.5rem; }
+    .footer-top { grid-template-columns: 1fr; gap: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+<div class="toast" id="toast"></div>
+
+<!-- CART BG -->
+<div class="cart-bg" id="cartBg" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-top">
+    <h3>My Bag</h3>
+    <button class="cart-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-body" id="cartBody"></div>
+  <div class="cart-foot">
+    <div class="cart-subtotal">
+      <span>Subtotal</span>
+      <span id="cartTotal">$0.00</span>
+    </div>
+    <a href="#" class="btn-fill" style="width:100%;text-align:center;display:block;">Checkout →</a>
+    <p style="text-align:center;font-size:0.68rem;color:var(--taupe);margin-top:0.8rem;letter-spacing:0.08em;">Free shipping on orders over $90</p>
+  </div>
+</div>
+
+<!-- ANNOUNCE -->
+<div class="announce">✦ Summer Collection Now Live — Free Shipping Over $90 ✦</div>
+
+<!-- HEADER -->
+<header>
+  <nav>
+    <ul>
+      <li><a href="#shop">Shop</a></li>
+      <li><a href="#collections">Collections</a></li>
+      <li><a href="#about">Lookbook</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+  </nav>
+  <a href="#" class="logo">Shore<em>line</em></a>
+  <div class="header-right">
+    <button class="hbtn">⚲</button>
+    <button class="hbtn" onclick="openCart()">
+      ◻
+      <span class="cart-badge" id="cartBadge">0</span>
+    </button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-media">
+    <img src="https://images.unsplash.com/photo-1609505848912-b7c3b8b4beda?w=1200&q=80" alt="Coastal woman">
+    <div class="hero-pills">
+      <span class="pill">New Season</span>
+      <span class="pill">SS 2026</span>
+    </div>
+  </div>
+  <div class="hero-content">
+    <div class="eyebrow">She Lives by the Sea</div>
+    <h1>Born from<br><em>Salt & Sun</em></h1>
+    <p class="hero-desc">Effortless pieces for women who feel most alive with sand between their toes and wind in their hair. Designed for the shore, worn everywhere.</p>
+    <div class="hero-actions">
+      <a href="#shop" class="btn-fill">Shop the Collection</a>
+      <a href="#" class="btn-underline">Our Story</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">4k+</div>
+        <div class="stat-label">Happy Customers</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Natural Fibres</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">1%</div>
+        <div class="stat-label">For the Ocean</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner" id="tickerInner"></div>
+</div>
+
+<!-- SHOP SECTION -->
+<section id="shop">
+  <div class="sec-header fade-up">
+    <div class="sec-eyebrow">New In</div>
+    <h2 class="sec-title">The Summer <em>Collection</em></h2>
+  </div>
+  <div class="shop-grid" id="shopGrid"></div>
+</section>
+
+<!-- FEATURE SPLIT -->
+<div class="feature-split fade-up" id="collections">
+  <div class="feature-img">
+    <img src="https://images.unsplash.com/photo-1502716119720-b23a93e5fe1b?w=900&q=80" alt="Linen collection">
+  </div>
+  <div class="feature-content">
+    <div class="sec-eyebrow">Signature Series</div>
+    <h2>The Linen<br><em>Edit</em></h2>
+    <p>Inspired by the slow, unhurried rhythm of mornings by the water. Our linen collection is breathable, beautiful, and made to move with you — from the shoreline café to golden-hour walks along the pier.</p>
+    <div class="feature-tags">
+      <span class="tag">100% Linen</span>
+      <span class="tag">Sustainably Sourced</span>
+      <span class="tag">Hand-Dyed</span>
+      <span class="tag">Limited Run</span>
+    </div>
+    <a href="#" class="btn-fill" style="align-self:flex-start;">Explore the Edit →</a>
+  </div>
+</div>
+
+<!-- LIFESTYLE GRID -->
+<div class="sec-header fade-up">
+  <div class="sec-eyebrow">The Look</div>
+  <h2 class="sec-title">Styled for the <em>Shore</em></h2>
+</div>
+<div class="life-grid fade-up" id="about">
+  <div class="life-card">
+    <img src="https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=900&q=80" alt="Beach lifestyle">
+    <div class="life-label">
+      <small>Collection</small>
+      <h4>Dusk at the Shore</h4>
+      <a href="#">Explore →</a>
+    </div>
+  </div>
+  <div class="life-card">
+    <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=700&q=80" alt="Summer dress">
+    <div class="life-label">
+      <small>Featured</small>
+      <h4>The Sundress Edit</h4>
+      <a href="#">Shop →</a>
+    </div>
+  </div>
+  <div class="life-card">
+    <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=700&q=80" alt="Coastal accessories">
+    <div class="life-label">
+      <small>Accessories</small>
+      <h4>Shell & Straw</h4>
+      <a href="#">Shop →</a>
+    </div>
+  </div>
+  <div class="life-card">
+    <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=700&q=80" alt="Beach cover-up">
+    <div class="life-label">
+      <small>New In</small>
+      <h4>Cover-Up Season</h4>
+      <a href="#">Shop →</a>
+    </div>
+  </div>
+  <div class="life-card">
+    <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=700&q=80" alt="Summer shopping">
+    <div class="life-label">
+      <small>Guide</small>
+      <h4>Summer Essentials</h4>
+      <a href="#">Read →</a>
+    </div>
+  </div>
+</div>
+
+<!-- REVIEWS -->
+<section class="reviews-section fade-up">
+  <div class="sec-header">
+    <div class="sec-eyebrow">Real Women</div>
+    <h2 class="sec-title">Loved by <em>Shore Girls</em></h2>
+  </div>
+  <div class="reviews-track" id="reviewsTrack"></div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="nl-section fade-up">
+  <div class="nl-content">
+    <div class="sec-eyebrow">Join the Shore Circle</div>
+    <h2>Drift into our<br><em>World</em></h2>
+    <p>New arrivals, styling inspiration, and seasonal stories — delivered like a letter from the coast. Sign up and get 15% off your first order.</p>
+    <div class="nl-form">
+      <input type="email" placeholder="your@email.com" id="nlInput">
+      <button onclick="handleNl()">Join →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="f-brand">
+      <a href="#" class="logo">Shore<em style="color:var(--terracotta)">line</em></a>
+      <p>Clothing for women who love the ocean, the sun, and everything soft and slow between them.</p>
+      <div class="socials">
+        <a href="#" class="soc">ig</a>
+        <a href="#" class="soc">pt</a>
+        <a href="#" class="soc">tk</a>
+        <a href="#" class="soc">𝕏</a>
+      </div>
+    </div>
+    <div class="f-col">
+      <h5>Shop</h5>
+      <ul>
+        <li><a href="#">New Arrivals</a></li>
+        <li><a href="#">Swimwear</a></li>
+        <li><a href="#">Dresses</a></li>
+        <li><a href="#">Linen</a></li>
+        <li><a href="#">Cover-Ups</a></li>
+        <li><a href="#">Accessories</a></li>
+        <li><a href="#">Sale</a></li>
+      </ul>
+    </div>
+    <div class="f-col">
+      <h5>About</h5>
+      <ul>
+        <li><a href="#">Our Story</a></li>
+        <li><a href="#">Sustainability</a></li>
+        <li><a href="#">Lookbook</a></li>
+        <li><a href="#">Journal</a></li>
+        <li><a href="#">Careers</a></li>
+      </ul>
+    </div>
+    <div class="f-col">
+      <h5>Help</h5>
+      <ul>
+        <li><a href="#">Size Guide</a></li>
+        <li><a href="#">Shipping & Returns</a></li>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Gift Cards</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Shoreline. All rights reserved. Made with love by the sea.</p>
+    <div class="pay-methods">
+      <span class="pm">VISA</span>
+      <span class="pm">MC</span>
+      <span class="pm">AMEX</span>
+      <span class="pm">KLARNA</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── CURSOR ──
+const dot = document.getElementById('cursor-dot');
+const ring = document.getElementById('cursor-ring');
+let mx=0, my=0, rx=0, ry=0;
+document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; dot.style.left=mx+'px'; dot.style.top=my+'px'; });
+(function animRing(){ rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(animRing); })();
+document.querySelectorAll('a,button,.p-card,.life-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>ring.classList.add('big'));
+  el.addEventListener('mouseleave',()=>ring.classList.remove('big'));
+});
+
+// ── TICKER ──
+const tickWords = ['Free Shipping Over $90','Sustainably Made','Natural Fibres','She Lives by the Sea','1% For The Ocean','New Collection Live','Free Returns','Handcrafted Details'];
+const t = document.getElementById('tickerInner');
+const full = [...tickWords,...tickWords].map(w=>`<span class="ticker-item">${w}</span>`).join('');
+t.innerHTML = full + full;
+
+// ── PRODUCTS ──
+const products = [
+  {id:1,name:'Terracotta Wrap Dress',cat:'Dresses',price:138,old:null,badge:'new',stars:5,img:'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=600&q=80',sizes:['XS','S','M','L']},
+  {id:2,name:'Amalfi Linen Set',cat:'Sets',price:165,old:210,badge:'sale',stars:5,img:'https://images.unsplash.com/photo-1554568218-0f1715e72254?w=600&q=80',sizes:['S','M','L','XL']},
+  {id:3,name:'Shell Beach Tote',cat:'Accessories',price:88,old:null,badge:'new',stars:4,img:'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80',sizes:['One Size']},
+  {id:4,name:'Salt Air Bikini Top',cat:'Swimwear',price:74,old:null,badge:null,stars:5,img:'https://images.unsplash.com/photo-1570976447640-ac859083963f?w=600&q=80',sizes:['XS','S','M','L']},
+  {id:5,name:'Golden Hour Sundress',cat:'Dresses',price:122,old:null,badge:'new',stars:5,img:'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600&q=80',sizes:['XS','S','M','L','XL']},
+  {id:6,name:'Driftwood Straw Hat',cat:'Accessories',price:58,old:null,badge:null,stars:4,img:'https://images.unsplash.com/photo-1521369909029-2afed882baee?w=600&q=80',sizes:['One Size']},
+  {id:7,name:'Seafoam Linen Blouse',cat:'Tops',price:96,old:125,badge:'sale',stars:5,img:'https://images.unsplash.com/photo-1583744946564-b52ac1c389c8?w=600&q=80',sizes:['XS','S','M','L']},
+  {id:8,name:'Shoreline Cover-Up',cat:'Cover-Ups',price:108,old:null,badge:'new',stars:5,img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&q=80',sizes:['S/M','L/XL']},
+];
+
+const reviews = [
+  {text:'"I wore the wrap dress every single day of my Greece trip. I got stopped constantly. It\'s the most beautiful thing I own."',name:'Camille D.',loc:'Marseille, France',init:'C',stars:5},
+  {text:'"Shoreline just gets it. The fabrics actually feel like the sea — breezy and soft and timeless. Nothing else compares."',name:'Imogen H.',loc:'Byron Bay, Australia',init:'I',stars:5},
+  {text:'"The linen set arrived perfectly packaged and fits like a dream. I\'ve already ordered two more colors. Worth every cent."',name:'Valentina R.',loc:'Tulum, Mexico',init:'V',stars:5},
+];
+
+// ── RENDER ──
+let cart = [];
+function renderShop() {
+  document.getElementById('shopGrid').innerHTML = products.map(p=>`
+    <div class="p-card fade-up">
+      <div class="p-img">
+        <img src="${p.img}" alt="${p.name}" loading="lazy">
+        ${p.badge?`<div class="p-badge ${p.badge}">${p.badge==='new'?'New':'Sale'}</div>`:''}
+        <button class="p-wish">♡</button>
+        <div class="p-actions">
+          <div class="p-sizes">${p.sizes.map(s=>`<span class="size-opt">${s}</span>`).join('')}</div>
+          <button class="p-add" onclick="addToCart(${p.id})">Add to Bag</button>
+        </div>
+      </div>
+      <div class="p-info">
+        <div class="p-cat">${p.cat}</div>
+        <div class="p-name">${p.name}</div>
+        <div class="p-price">
+          <span class="now">$${p.price}</span>
+          ${p.old?`<span class="was">$${p.old}</span>`:''}
+        </div>
+        <div class="p-stars">${'★'.repeat(p.stars)}${'☆'.repeat(5-p.stars)}</div>
+      </div>
+    </div>
+  `).join('');
+  observeFade();
+}
+
+function renderReviews() {
+  document.getElementById('reviewsTrack').innerHTML = reviews.map(r=>`
+    <div class="r-card fade-up">
+      <div class="r-stars">${'★'.repeat(r.stars)}</div>
+      <p class="r-text">${r.text}</p>
+      <div class="r-person">
+        <div class="r-avatar">${r.init}</div>
+        <div>
+          <div class="r-name">${r.name}</div>
+          <div class="r-loc">${r.loc}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  observeFade();
+}
+
+// ── CART ──
+function addToCart(id) {
+  const p = products.find(x=>x.id===id);
+  const ex = cart.find(x=>x.id===id);
+  if(ex) ex.qty++;
+  else cart.push({...p,qty:1});
+  updateCart();
+  showToast(`${p.name} added to bag`);
+}
+function removeCI(id) {
+  cart = cart.filter(x=>x.id!==id);
+  updateCart();
+}
+function updateCart() {
+  const count = cart.reduce((a,x)=>a+x.qty,0);
+  document.getElementById('cartBadge').textContent = count;
+  const total = cart.reduce((a,x)=>a+x.price*x.qty,0);
+  document.getElementById('cartTotal').textContent = `$${total.toFixed(2)}`;
+  const body = document.getElementById('cartBody');
+  if(!cart.length) { body.innerHTML='<p class="empty-msg">Your bag is empty, darling.</p>'; return; }
+  body.innerHTML = cart.map(ci=>`
+    <div class="ci">
+      <img src="${ci.img}" alt="${ci.name}">
+      <div>
+        <div class="ci-name">${ci.name}</div>
+        <div class="ci-meta">${ci.cat} · Qty ${ci.qty}</div>
+        <button class="ci-rm" onclick="removeCI(${ci.id})">Remove</button>
+      </div>
+      <div class="ci-price">$${(ci.price*ci.qty).toFixed(2)}</div>
+    </div>
+  `).join('');
+}
+function openCart() {
+  document.getElementById('cartBg').classList.add('on');
+  document.getElementById('cartDrawer').classList.add('on');
+  document.body.style.overflow='hidden';
+}
+function closeCart() {
+  document.getElementById('cartBg').classList.remove('on');
+  document.getElementById('cartDrawer').classList.remove('on');
+  document.body.style.overflow='';
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg+' ✓'; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ── NEWSLETTER ──
+function handleNl() {
+  const inp=document.getElementById('nlInput');
+  if(!inp.value.includes('@')){inp.style.borderColor='var(--rose)';return;}
+  inp.style.borderColor='';
+  const btn=inp.nextElementSibling;
+  btn.textContent='Joined ✓'; btn.style.background='var(--sea)';
+  inp.value='';
+  setTimeout(()=>{btn.textContent='Join →';btn.style.background='';},3000);
+}
+
+// ── SCROLL FADE ──
+function observeFade() {
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach((e,i)=>{
+      if(e.isIntersecting){
+        setTimeout(()=>e.target.classList.add('in'), i*70);
+        obs.unobserve(e.target);
+      }
+    });
+  },{threshold:0.1});
+  document.querySelectorAll('.fade-up:not(.in)').forEach(el=>obs.observe(el));
+}
+
+// ── WISHLIST HEARTS ──
+document.addEventListener('click', e=>{
+  if(e.target.classList.contains('p-wish')){
+    e.target.textContent = e.target.textContent==='♡'?'♥':'♡';
+    e.target.style.color = e.target.textContent==='♥'?'var(--rose)':'var(--taupe)';
+  }
+});
+
+// ── INIT ──
+renderShop();
+renderReviews();
+updateCart();
+observeFade();
+</script>
+</body>
+</html>
